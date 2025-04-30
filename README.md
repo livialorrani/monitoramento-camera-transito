@@ -81,12 +81,6 @@ Abra o arquivo `index.html` em seu navegador (**Google Chrome** recomendado).
 
 ---
 
-## 🗂️ Arquitetura da Solução
-
-![Arquitetura do Sistema](arquitetura_monitoramento.svg)
-
----
-
 ## 🤝 Projeto em Equipe
 
 Este projeto foi desenvolvido de forma colaborativa durante a **Residência do Porto Digital na Rede Globo** (Março 2025 – presente), com foco em soluções de automação aplicadas ao jornalismo e monitoramento urbano em tempo real.
