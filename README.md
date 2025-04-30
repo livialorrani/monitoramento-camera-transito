@@ -2,7 +2,7 @@
 
 Este repositório reúne um sistema colaborativo desenvolvido como parte do desafio de **Inteligência Artificial na automatização do sinal das câmeras de trânsito**, proposto durante a Residência do Porto Digital. A empresa parceira selecionada para este desafio foi a **Rede Globo**.
 
-A solução permite monitorar câmeras de trânsito em tempo real e automatizar a troca de câmeras com base na narração ao vivo e no roteiro do editor, utilizando técnicas de Inteligência Artificial e Processamento de Linguagem Natural (PLN).
+A solução permite monitorar câmeras de trânsito em tempo real e automatizar a troca de câmeras com base na narração ao vivo, utilizando técnicas de Inteligência Artificial e Processamento de Linguagem Natural (PLN).
 
 ---
 
