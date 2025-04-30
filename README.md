@@ -63,10 +63,10 @@ Abra o arquivo `index.html` em seu navegador (**Google Chrome** recomendado).
 ```
 📦 monitoramento-transito/
 ├── mediamtx/                 # Configuração do servidor de streaming
-│   └──  mediamtx.yml          
-├── index.html                # Interface e lógica de controle por voz              
-├── logo_globo.png            # Logotipo da interface
-└── README.md                 # Documentação e instruções
+│   └──  mediamtx.yml        
+├── README.md                 # Documentação e instruções              
+├── index.html                # Interface e lógica de controle por voz
+└── logo_globo.png            # Logotipo da interface
 ```
 
 ---
