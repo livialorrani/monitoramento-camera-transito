@@ -71,7 +71,7 @@ Abra o arquivo `index.html` em seu navegador (**Google Chrome** recomendado).
 
 ---
 
-## 🧪 Funcionalidades Implementadas
+## 📌 Funcionalidades Implementadas
 
 - ✅ Visualização da câmera principal em tela cheia.
 - ✅ Lista lateral de câmeras com status online/offline.
