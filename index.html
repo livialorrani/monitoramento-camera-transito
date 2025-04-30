@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Monitoramento de Trânsito</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      background-color: #1e1e2f;
+      color: white;
+      padding: 10px 20px;
+    }
+
+    .logo {
+      height: 50px;
+      margin-right: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 0;
+      flex-grow: 1;
+    }
+
+    .voice-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: 20px;
+      cursor: pointer;
+    }
+
+    .voice-status {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background-color: #ccc;
+    }
+
+    .voice-status.listening {
+      background-color: #4CAF50;
+      animation: pulse 1.5s infinite;
+    }
+
+    .voice-status.disabled {
+      background-color: #f44336;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .content {
+      display: flex;
+      flex-direction: row;
+      height: calc(100vh - 80px);
+    }
+
+    .main-camera {
+      flex: 3;
+      padding: 20px;
+    }
+
+    .main-camera h2 {
+      margin-bottom: 10px;
+    }
+
+    #playerPrincipal {
+      width: 100%;
+      height: 80vh;
+      background: black;
+      border-radius: 8px;
+    }
+
+    .side-cameras {
+      flex: 1;
+      background-color: #eee;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .side-cameras h3 {
+      margin-bottom: 15px;
+    }
+
+    /* Estilo para a lista de câmeras */
+    .camera-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .camera-list li {
+      padding: 12px 15px;
+      margin-bottom: 8px;
+      background-color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-left: 4px solid #2196F3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .camera-list li:hover {
+      background-color: #f0f7ff;
+      transform: translateX(5px);
+    }
+
+    .camera-list li.active {
+      border-left: 4px solid #4CAF50;
+      background-color: #e3f2fd;
+      font-weight: bold;
+    }
+
+    .camera-name {
+      font-size: 16px;
+    }
+
+    .camera-status {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #f44336; /* Vermelho - indicador de câmera offline/não funcionando */
+    }
+
+    .camera-status.online {
+      background-color: #4CAF50; /* Verde - indicador de câmera online/funcionando */
+    }
+
+    /* Estilos para o log de comandos */
+    .voice-log {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 300px;
+      max-height: 200px;
+      overflow-y: auto;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .voice-log.visible {
+      display: block;
+    }
+
+    .voice-log h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #555;
+    }
+
+    .voice-log ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .voice-log li {
+      padding: 5px 0;
+      border-bottom: 1px solid #333;
+      font-size: 14px;
+    }
+
+    .voice-log li:last-child {
+      border-bottom: none;
+    }
+
+    .log-time {
+      color: #aaa;
+      font-size: 12px;
+      margin-right: 8px;
+    }
+
+    .log-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #1e1e2f;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    /* Interface alternativa - Interface manual */
+    .manual-controls {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      border-radius: 8px;
+      color: white;
+      z-index: 1000;
+      display: none;
+    }
+
+    .manual-controls h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 5px;
+    }
+
+    .camera-button {
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      padding: 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .camera-button:hover {
+      background-color: #0b7dda;
+    }
+
+    /* Estilos para novos botões */
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .retry-button, .fallback-button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .retry-button {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .fallback-button {
+      background-color: #FF9800;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <img src="logo_globo.png" alt="Logotipo da Empresa" class="logo">
+    <h1>Monitoramento de Trânsito</h1>
+    <div class="voice-control" id="voiceControl">
+      <div class="voice-status" id="voiceStatus"></div>
+      <span id="voiceStatusText">Voz Ativada</span>
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="main-camera">
+      <h2 id="titulo">Câmera Principal</h2>
+      <div id="playerPrincipal"></div>
+    </div>
+
+    <aside class="side-cameras">
+      <h3>Lista de Câmeras</h3>
+      <ul id="listaCameras" class="camera-list">
+        <!-- Lista de câmeras será preenchida via JavaScript -->
+      </ul>
+    </aside>
+  </main>
+
+  <!-- Log de comandos de voz -->
+  <div class="voice-log visible" id="voiceLog">
+    <h4>Histórico de Comandos</h4>
+    <ul id="logList"></ul>
+    <div class="action-buttons">
+      <button class="retry-button" id="retryVoice">Tentar Novamente</button>
+      <button class="fallback-button" id="useFallback">Usar Modo Manual</button>
+    </div>
+  </div>
+
+  <!-- Botão para mostrar/ocultar log -->
+  <button class="log-toggle" id="logToggle">📋</button>
+
+  <!-- Interface manual (modo de fallback) -->
+  <!-- Interface manual (modo de fallback) -->
+  <div class="manual-controls" id="manualControls">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+      <h4 style="margin: 0;">Seleção Manual de Câmera</h4>
+      <button onclick="fecharModoManual()" style="background-color: transparent; color: white; border: none; font-size: 20px; cursor: pointer;">✖</button>
+    </div>
+    <div class="button-grid" id="manualCameraButtons">
+      <!-- Botões serão preenchidos via JavaScript -->
+    </div>
+  </div>
+
+  <!-- Biblioteca HLS.js para reprodução de streams HLS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.5/hls.min.js"></script>
+
+  <script>
+    let recognition;
+    let activePlayer;
+    let currentCamera = null;
+    let isListening = false;
+    let voiceEnabled = true;
+    let recognitionErrors = 0;
+    const MAX_RECOGNITION_ERRORS = 3;
+    const commandLog = [];
+  
+    const serverAddress = window.location.hostname || 'localhost';
+    const hlsPort = 8888;
+  
+    const cameras = [
+      { nome: "BOA VIAGEM", id: "camera1", nomes_alternativos: ["Boa Viagem"] },
+      { nome: "GUARARAPES", id: "camera2", nomes_alternativos: ["Guararapes", "Av. Guararapes", "Avenida Guararapes"] },
+      { nome: "RUA DA AURORA", id: "camera3", nomes_alternativos: ["Rua da Aurora", "Aurora Rua", "Rua Aurora"] },
+      { nome: "DERBY", id: "camera4", nomes_alternativos: ["Derby"] },
+      { nome: "BOA VISTA", id: "camera5", nomes_alternativos: ["Conde da Boa Vista", "Avenida Conde da Boa Vista"] },
+      { nome: "BR-101", id: "camera6", nomes_alternativos: ["BR-101", "BR 101", "BR101"] },
+      { nome: "PE-15", id: "camera7", nomes_alternativos: ["PE-15", "PE 15", "PE15"] },
+      { nome: "TORRE AURORA", id: "camera8", nomes_alternativos: ["Torre da Aurora", "Torre Aurora", "Torre"] },
+      { nome: "CARUARU", id: "camera9", nomes_alternativos: ["Caruaru"] },
+    ];
+  
+    // Função para adicionar entrada ao log
+    function addToLog(message, isCommand = true) {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      commandLog.unshift({
+        time: timeString,
+        message: message,
+        isCommand: isCommand
+      });
+      
+      // Limitar o log a 20 entradas
+      if (commandLog.length > 20) {
+        commandLog.pop();
+      }
+      
+      updateLogDisplay();
+    }
+    
+    // Função para atualizar a exibição do log
+    function updateLogDisplay() {
+      const logList = document.getElementById('logList');
+      if (!logList) return;
+      
+      logList.innerHTML = '';
+      
+      commandLog.forEach(entry => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="log-time">${entry.time}</span> ${entry.message}`;
+        if (entry.isCommand) {
+          li.style.color = '#4CAF50';
+        }
+        logList.appendChild(li);
+      });
+    }
+    
+    // Função para alternar o estado do reconhecimento de voz
+    function toggleVoiceRecognition() {
+      voiceEnabled = !voiceEnabled;
+      const voiceStatus = document.getElementById('voiceStatus');
+      const voiceStatusText = document.getElementById('voiceStatusText');
+      
+      if (voiceEnabled) {
+        voiceStatus.className = 'voice-status';
+        voiceStatusText.textContent = 'Voz Ativada';
+        addToLog('Reconhecimento de voz ativado', false);
+        iniciarCapturaDeVoz();
+      } else {
+        voiceStatus.className = 'voice-status disabled';
+        voiceStatusText.textContent = 'Voz Desativada';
+        addToLog('Reconhecimento de voz desativado', false);
+        if (recognition) {
+          try {
+            recognition.stop();
+          } catch (e) {
+            console.log("Erro ao parar reconhecimento:", e);
+          }
+        }
+      }
+    }
+  
+    // Função para iniciar o player HLS principal
+    function iniciarHlsPlayer(cameraId) {
+      if (cameraId === currentCamera) return;
+      
+      // Atualiza a classe ativa na lista
+      document.querySelectorAll('#listaCameras li').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      const cameraItem = document.getElementById(`camera-item-${cameraId}`);
+      if (cameraItem) {
+        cameraItem.classList.add('active');
+      }
+      
+      currentCamera = cameraId;
+  
+      const playerContainer = document.getElementById('playerPrincipal');
+      playerContainer.innerHTML = '';
+  
+      const videoElement = document.createElement('video');
+      videoElement.controls = true;
+      videoElement.autoplay = true;
+      videoElement.muted = true;
+      videoElement.style.width = '100%';
+      videoElement.style.height = '100%';
+      playerContainer.appendChild(videoElement);
+  
+      const hlsUrl = `http://${serverAddress}:${hlsPort}/${cameraId}/index.m3u8`;
+  
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        
+        // Adicionando tratamento de erros
+        hls.on(Hls.Events.ERROR, function(event, data) {
+          console.error(`Erro na câmera ${cameraId}:`, data);
+          
+          // Se for um erro crítico, marcar a câmera como não funcionando
+          if (data.fatal) {
+            updateCameraStatus(cameraId, false);
+            addToLog(`Câmera ${cameras.find(c => c.id === cameraId)?.nome || cameraId} não está funcionando`, false);
+          }
+        });
+        
+        // Quando o manifesto é analisado com sucesso, a câmera está funcionando
+        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+          updateCameraStatus(cameraId, true);
+        });
+        
+        hls.loadSource(hlsUrl);
+        hls.attachMedia(videoElement);
+  
+        if (activePlayer && typeof activePlayer.destroy === 'function') {
+          activePlayer.destroy();
+        }
+        activePlayer = hls;
+  
+      } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+        videoElement.src = hlsUrl;
+        videoElement.addEventListener('loadedmetadata', function() {
+          videoElement.play();
+          updateCameraStatus(cameraId, true);
+        });
+        
+        videoElement.addEventListener('error', function() {
+          updateCameraStatus(cameraId, false);
+          addToLog(`Câmera ${cameras.find(c => c.id === cameraId)?.nome || cameraId} não está funcionando`, false);
+        });
+      } else {
+        console.error('HLS não é suportado neste navegador');
+      }
+    }
+
+    // Função para atualizar o status da câmera na lista
+    function updateCameraStatus(cameraId, isOnline) {
+      const statusElement = document.getElementById(`status-${cameraId}`);
+      const cameraItem = document.getElementById(`camera-item-${cameraId}`);
+      const cameraNameEl = cameraItem?.querySelector('.camera-name');
+
+      if (statusElement && cameraNameEl) {
+        const originalName = cameras.find(c => c.id === cameraId)?.nome || cameraNameEl.textContent.replace(/\s*\(offline\)/, '');
+
+        if (isOnline) {
+          statusElement.classList.add('online');
+          statusElement.title = "Câmera funcionando";
+          cameraNameEl.textContent = originalName;
+        } else {
+          statusElement.classList.remove('online');
+          statusElement.title = "Câmera não está funcionando";
+          if (!cameraNameEl.textContent.includes("(offline)")) {
+            cameraNameEl.innerHTML = `${originalName} <span style=\"color: #f44336; font-size: 12px;\">(offline)</span>`;
+          }
+        }
+      }
+    }
+
+
+    // Função para mudar de câmera
+    function mudarCamera(cameraId) {
+      const camera = cameras.find(cam => cam.id === cameraId);
+      if (camera) {
+        document.getElementById("titulo").textContent = `Câmera Principal: ${camera.nome}`;
+        iniciarHlsPlayer(cameraId);
+        addToLog(`Câmera alterada para: ${camera.nome}`);
+      }
+    }
+  
+    // Função para renderizar a lista de câmeras
+    function renderizarListaCameras() {
+      const lista = document.getElementById("listaCameras");
+      lista.innerHTML = ''; // Limpa a lista
+      
+      cameras.forEach(camera => {
+        const item = document.createElement("li");
+        item.id = `camera-item-${camera.id}`;
+        item.onclick = () => mudarCamera(camera.id);
+        
+        item.innerHTML = `
+          <span class="camera-name">${camera.nome}</span>
+          <span class="camera-status" id="status-${camera.id}" title="Verificando status..."></span>
+        `;
+        
+        lista.appendChild(item);
+        
+        // Inicialmente, todas as câmeras são marcadas como não verificadas (sem classe online)
+        // A verificação real será feita quando a câmera for selecionada ou durante a verificação periódica
+      });
+    }
+    
+    // Função para verificar o status de todas as câmeras
+    function verificarStatusCameras() {
+      cameras.forEach(camera => {
+        verificarStatusCamera(camera.id);
+      });
+    }
+    
+    // Função para verificar o status de uma câmera específica
+    function verificarStatusCamera(cameraId) {
+      if (cameraId === currentCamera) {
+        // A câmera atual já está sendo verificada pelo player principal
+        return;
+      }
+      
+      const hlsUrl = `http://${serverAddress}:${hlsPort}/${cameraId}/index.m3u8`;
+      
+      // Usa fetch para verificar se a câmera está acessível
+      fetch(hlsUrl)
+        .then(response => {
+          if (response.ok) {
+            updateCameraStatus(cameraId, true);
+          } else {
+            updateCameraStatus(cameraId, false);
+          }
+        })
+        .catch(() => {
+          updateCameraStatus(cameraId, false);
+        });
+    }
+
+    // Função para renderizar os botões de controle manual
+    function renderizarBotoesManual() {
+      const container = document.getElementById("manualCameraButtons");
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      cameras.forEach(camera => {
+        const button = document.createElement("button");
+        button.className = "camera-button";
+        button.textContent = camera.nome;
+        button.onclick = () => mudarCamera(camera.id);
+        container.appendChild(button);
+      });
+    }
+
+    // Função para ativar o modo manual
+    function ativarModoManual() {
+      document.getElementById('manualControls').style.display = 'block';
+      document.getElementById('voiceStatus').className = 'voice-status disabled';
+      document.getElementById('voiceStatusText').textContent = 'Modo Manual';
+      addToLog('Modo manual ativado', false);
+    }
+  
+    // Função para verificar se o navegador suporta reconhecimento de voz
+    function isSpeechRecognitionSupported() {
+      return 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+    }
+  
+    // Função para iniciar o reconhecimento de voz
+    function iniciarCapturaDeVoz() {
+      if (!isSpeechRecognitionSupported() || !voiceEnabled) {
+        console.warn("Reconhecimento de voz não suportado ou desativado.");
+        return;
+      }
+  
+      if (isListening) return;
+      isListening = true;
+  
+      try {
+        // Aqui estamos tentando usar uma configuração mais básica para evitar problemas
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.lang = 'pt-BR';
+        recognition.interimResults = false;
+        recognition.continuous = false; // Configuração modificada para false
+        recognition.maxAlternatives = 3; // Aumenta para capturar mais alternativas
+  
+        recognition.onstart = () => {
+          console.log("Reconhecimento de voz iniciado");
+          document.getElementById('voiceStatus').classList.add('listening');
+          addToLog('Escutando...', false);
+        };
+  
+        recognition.onresult = (event) => {
+          recognitionErrors = 0; // Reseta contagem de erros quando obtém sucesso
+          const transcript = event.results[event.results.length - 1][0].transcript.trim();
+          console.log("Texto reconhecido:", transcript);
+          addToLog(`Comando detectado: "${transcript}"`);
+          detectarComandoDeVoz(transcript);
+          
+          // Com continuous=false, precisamos reiniciar manualmente após cada resultado
+          setTimeout(() => {
+            if (voiceEnabled) {
+              reiniciarReconhecimento();
+            }
+          }, 500);
+        };
+  
+        recognition.onerror = (event) => {
+          console.error("Erro no reconhecimento:", event.error);
+          addToLog(`Erro no reconhecimento: ${event.error}`, false);
+
+          recognitionErrors++;
+          
+          if (recognitionErrors >= MAX_RECOGNITION_ERRORS) {
+            addToLog('Muitos erros consecutivos. Considere usar o modo manual.', false);
+            // Não desliga completamente, mas sugere o modo manual
+          }
+          
+          // Reiniciar o reconhecimento após erro
+          setTimeout(() => {
+            if (voiceEnabled) {
+              reiniciarReconhecimento();
+            }
+          }, 2000); // Espera um pouco mais após um erro
+        };
+  
+        recognition.onend = () => {
+          console.log("Reconhecimento encerrado");
+          isListening = false;
+          document.getElementById('voiceStatus').classList.remove('listening');
+
+          if (voiceEnabled) {
+            setTimeout(() => {
+              iniciarCapturaDeVoz(); // reinicia automaticamente
+            }, 1000);
+          }
+        };
+  
+        recognition.start();
+      } catch (error) {
+        console.error("Erro ao iniciar reconhecimento de voz:", error);
+        addToLog(`Falha ao iniciar reconhecimento: ${error.message}`, false);
+        isListening = false;
+        ativarModoManual(); // Ativa o modo manual em caso de falha
+      }
+    }
+  
+    // Função para reiniciar o reconhecimento
+    function reiniciarReconhecimento() {
+      if (recognition) {
+        try {
+          recognition.abort();
+        } catch (e) {
+          console.log("Erro ao abortar reconhecimento:", e);
+        }
+      }
+      isListening = false;
+      
+      setTimeout(() => {
+        if (voiceEnabled) {
+          iniciarCapturaDeVoz();
+        }
+      }, 300);
+    }
+  
+    
+    // Função para fechar o modo manual
+    function fecharModoManual() {
+      document.getElementById('manualControls').style.display = 'none';
+      document.getElementById('voiceStatus').className = 'voice-status';
+      document.getElementById('voiceStatusText').textContent = 'Voz Ativada';
+      addToLog('Modo manual fechado', false);
+    }
+
+
+    // Função para detectar comandos de voz e mudar a câmera
+    function detectarComandoDeVoz(texto) {
+      const textoNormalizado = texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+      // Etapa 1: Nomes completos
+      for (const camera of cameras) {
+        const nomeNormalizado = camera.nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        if (textoNormalizado.includes(nomeNormalizado)) {
+          mudarCamera(camera.id);
+          return;
+        }
+      }
+
+      // Etapa 2: Nomes alternativos completos
+      for (const camera of cameras) {
+        for (const alias of camera.nomes_alternativos) {
+          const aliasNormalizado = alias.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          if (textoNormalizado.includes(aliasNormalizado)) {
+            mudarCamera(camera.id);
+            return;
+          }
+        }
+      }
+
+      // Etapa 3: Fallback com interseção de duas palavras ou mais
+      for (const camera of cameras) {
+        const palavrasNome = camera.nome.toLowerCase().split(' ');
+        const palavrasTexto = textoNormalizado.split(' ');
+
+        const intersecao = palavrasNome.filter(palavra => palavra.length > 3 && palavrasTexto.includes(palavra));
+
+        if (intersecao.length >= 2) {
+          mudarCamera(camera.id);
+          return;
+        }
+      }
+
+      addToLog('Nenhuma câmera correspondente encontrada', false);
+    }
+
+
+    window.onload = () => {
+      renderizarListaCameras();
+      renderizarBotoesManual();
+      mudarCamera(cameras[0].id);
+      
+      // Verificar periodicamente o status das câmeras
+      setInterval(verificarStatusCameras, 30000); // Verifica a cada 30 segundos
+      
+      // Configurar o botão de controle de voz
+      document.getElementById('voiceControl').addEventListener('click', toggleVoiceRecognition);
+      
+      // Configurar o botão de toggle do log
+      document.getElementById('logToggle').addEventListener('click', () => {
+        document.getElementById('voiceLog').classList.toggle('visible');
+      });
+      
+      // Configurar botão de retry
+      document.getElementById('retryVoice').addEventListener('click', () => {
+        addToLog('Tentando reiniciar reconhecimento de voz...', false);
+        voiceEnabled = true;
+        recognitionErrors = 0;
+        document.getElementById('voiceStatus').className = 'voice-status';
+        document.getElementById('voiceStatusText').textContent = 'Voz Ativada';
+        reiniciarReconhecimento();
+      });
+      
+      // Configurar botão de fallback
+      document.getElementById('useFallback').addEventListener('click', () => {
+        ativarModoManual();
+      });
+      
+      // Adiciona um pequeno delay antes de iniciar o reconhecimento de voz
+      setTimeout(() => {
+        if (isSpeechRecognitionSupported()) {
+          addToLog('Sistema iniciado', false);
+          iniciarCapturaDeVoz();
+        } else {
+          console.warn("Recursos de voz não disponíveis");
+          document.getElementById('voiceStatus').className = 'voice-status disabled';
+          document.getElementById('voiceStatusText').textContent = 'Voz Não Suportada';
+          addToLog('Reconhecimento de voz não suportado neste navegador', false);
+          ativarModoManual();
+        }
+      }, 1500);
+    };
+  </script>
+</body>
+</html>

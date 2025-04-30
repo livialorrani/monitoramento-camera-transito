@@ -1,0 +1,104 @@
+###############################################
+# MediaMTX v1.12.0 
+###############################################
+
+# Configurações globais
+logLevel: info
+logDestinations: [stdout]
+logFile: mediamtx.log
+readTimeout: 30s
+writeTimeout: 30s
+api: yes
+apiAddress: 0.0.0.0:9997
+metrics: no
+pprof: no
+runOnConnect: ""
+runOnConnectRestart: no
+
+# Configurações RTSP
+rtsp: yes 
+rtspAddress: :8554
+rtspTransports: [tcp, udp] 
+rtpAddress: :8000
+rtcpAddress: :8001
+multicastIPRange: 224.1.0.0/16
+multicastRTPPort: 8002
+multicastRTCPPort: 8003
+
+# Configurações RTMP
+rtmp: yes  
+rtmpAddress: :1935
+
+# Configurações HLS
+hls: yes  
+hlsAddress: :8888
+hlsAlwaysRemux: yes
+hlsSegmentCount: 7
+hlsSegmentDuration: "1s"
+hlsDirectory: ""
+
+# Configurações de paths (streams)
+paths:
+  all:
+    publishUser: ""  
+    publishPass: ""
+    readUser: ""
+    readPass: ""
+    publishIPs: []
+    readIPs: []
+    overridePublisher: no  
+
+  # Câmeras específicas
+  camera1:
+    source: rtsp://Porto:Porto@9000@168.90.225.117:554/cam/realmonitor?channel=1&amp;subtype=0
+    rtspTransport: tcp  
+    sourceOnDemand: yes
+    overridePublisher: yes  
+
+  camera2:
+    source: rtsp://Porto:Porto@9000@168.90.225.117:554/cam/realmonitor?channel=2&amp;subtype=0
+    rtspTransport: tcp
+    sourceOnDemand: yes
+    overridePublisher: yes
+
+  camera3:
+    source: rtsp://Porto:Porto@9000@168.90.225.117:554/cam/realmonitor?channel=3&amp;subtype=0
+    rtspTransport: tcp
+    sourceOnDemand: yes
+    overridePublisher: yes
+
+  camera4:
+    source: rtsp://Porto:Porto@9000@168.90.225.117:554/cam/realmonitor?channel=4&amp;subtype=0
+    rtspTransport: tcp
+    sourceOnDemand: yes
+    overridePublisher: yes
+
+  camera5:
+    source: rtsp://Porto:Porto@9000@168.90.225.117:554/cam/realmonitor?channel=5&amp;subtype=0
+    rtspTransport: tcp
+    sourceOnDemand: yes
+    overridePublisher: yes
+
+  camera6:
+    source: rtsp://Porto:Porto@9000@168.90.225.117:554/cam/realmonitor?channel=6&amp;subtype=0
+    rtspTransport: tcp
+    sourceOnDemand: yes
+    overridePublisher: yes
+
+  camera7:
+    source: rtsp://Porto:Porto@9000@168.90.225.117:554/cam/realmonitor?channel=7&amp;subtype=0
+    rtspTransport: tcp
+    sourceOnDemand: yes
+    overridePublisher: yes
+
+  camera8:
+    source: rtsp://Porto:Porto@9000@168.90.225.117:554/cam/realmonitor?channel=8&amp;subtype=0
+    rtspTransport: tcp
+    sourceOnDemand: yes
+    overridePublisher: yes
+
+  camera9:
+    source: rtsp://Porto:Porto@9000@168.90.225.117:554/cam/realmonitor?channel=9&amp;subtype=0
+    rtspTransport: tcp
+    sourceOnDemand: yes
+    overridePublisher: yes
