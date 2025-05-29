@@ -27,13 +27,13 @@ A solução permite monitorar câmeras de trânsito em tempo real e automatizar 
 
 ## 👨‍💻 Tecnologias e Bibliotecas Utilizadas
 
-### 🎨 Interface Web
+### Interface Web
 
 - **HTML5**, **CSS3**, **JavaScript Vanilla**
 - **MediaMTX v1.12.0** – servidor de streaming RTSP/HLS
 - **HLS.js** – player de vídeo para reprodução dos streams HLS
 
-### 🧠 Inteligência Artificial / Reconhecimento de Voz
+### Inteligência Artificial / Reconhecimento de Voz
 - **SpeechRecognition API** (navegadores compatíveis)
 - **Web Speech API** – para comandos de voz e captura de fala
 - **Custom Mapping e Normalização de Texto** – associação de comandos a câmeras com tolerância semântica
@@ -43,20 +43,39 @@ A solução permite monitorar câmeras de trânsito em tempo real e automatizar 
 ## 🛠️ Como Rodar o Projeto Localmente
 
 ### 1. Instale o MediaMTX
-Faça o download [neste link](https://github.com/bluenviron/mediamtx/releases) e configure o arquivo `mediamtx.yml` com os streams RTSP das suas câmeras.
+- Faça o download [neste link](https://github.com/bluenviron/mediamtx/releases) e configure o arquivo `mediamtx.yml` com os streams RTSP das câmeras.
 
-```bash
+#### 1.1 Passos para Linux
+```
+# Clone o repositório
+git clone https://github.com/livialorrani/monitoramento-camera-transito.git
+cd monitoramento-camera-transito
+cd mediamtx
+
+# Dê permissão de execução ao binário do MediaMTX
+chmod +x ./mediamtx
+
+# Execute o MediaMTX com a configuração das câmeras
 ./mediamtx mediamtx.yml
+
+# Abra a interface no navegador (ajuste o caminho conforme seu sistema)
+xdg-open index.html
 ```
 
-Isso iniciará os servidores nas portas padrão:
-- RTSP: `8554`
-- HLS: `8888`
+#### 1.2 Passos para Windows
+```
+# Clone o repositório
+git clone https://github.com/livialorrani/monitoramento-camera-transito.git
+cd monitoramento-camera-transito
+cd mediamtx
 
-### 2. Inicie a Interface
-Abra o arquivo `index.html` em seu navegador (**Google Chrome** recomendado).
+# Execute o MediaMTX com a configuração das câmeras
+.\mediamtx.exe mediamtx.yml
 
----
+# Abra a interface no navegador (duplo clique ou via comando) em um novo terminal na pasta monitoramento-camera-transito
+http-server -p 5500
+# Em seguida, clique na porta 127.0.0.1:5500
+```
 
 ## 🧩 Estrutura do Projeto
 
@@ -83,7 +102,7 @@ Abra o arquivo `index.html` em seu navegador (**Google Chrome** recomendado).
 
 ## 🤝 Projeto em Equipe
 
-Este projeto foi desenvolvido de forma colaborativa durante a **Residência do Porto Digital na Rede Globo** (Março 2025 – presente), com foco em soluções de automação aplicadas ao jornalismo e monitoramento urbano em tempo real.
+Este projeto foi desenvolvido de forma colaborativa durante a **Residência do Porto Digital na Rede Globo** (Março 2025 – Junho 2025), com foco em soluções de automação aplicadas ao jornalismo e monitoramento urbano em tempo real.
 
 ---
 
