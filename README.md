@@ -1,3 +1,4 @@
+# Membros da equipe: Livia Lorrani, Henrique Xavier, Elias Ramos, Yan Libni, Rafael Thomas e Flávia Paloma
 # 🎥 Sistema Inteligente de Monitoramento de Câmeras de Trânsito
 
 Este repositório reúne um sistema colaborativo desenvolvido como parte do desafio de **Inteligência Artificial na automatização do sinal das câmeras de trânsito**, proposto durante a Residência do Porto Digital. A empresa parceira selecionada para este desafio foi a **Rede Globo**.
