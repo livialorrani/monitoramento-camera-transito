@@ -104,6 +104,9 @@ http-server -p 5500
 
 Este projeto foi desenvolvido de forma colaborativa durante a **Residência do Porto Digital na Rede Globo** (Março 2025 – Junho 2025), com foco em soluções de automação aplicadas ao jornalismo e monitoramento urbano em tempo real.
 
+### Documentação
+- Acesso a [documentação](https://docs.google.com/document/d/17dYP3_amcxufTQoHhEg77aHHEqU2eq3K5JASw3NROUE/edit?tab=t.0)
+
 ---
 
 ## 📬 Contato
