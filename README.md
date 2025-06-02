@@ -1,4 +1,3 @@
-# Membros da equipe: Livia Lorrani, Henrique Xavier, Elias Ramos, Yan Libni, Rafael Thomas e Flávia Paloma
 # 🎥 Sistema Inteligente de Monitoramento de Câmeras de Trânsito
 
 Este repositório reúne um sistema colaborativo desenvolvido como parte do desafio de **Inteligência Artificial na automatização do sinal das câmeras de trânsito**, proposto durante a Residência do Porto Digital. A empresa parceira selecionada para este desafio foi a **Rede Globo**.
@@ -103,7 +102,9 @@ http-server -p 5500
 
 ## 🤝 Projeto em Equipe
 
-Este projeto foi desenvolvido de forma colaborativa durante a **Residência do Porto Digital na Rede Globo** (Março 2025 – Junho 2025), com foco em soluções de automação aplicadas ao jornalismo e monitoramento urbano em tempo real.
+Este projeto foi desenvolvido de forma colaborativa durante a **Residência do Porto Digital na Rede Globo** (Março 2025 – Junho 2025), com foco em soluções de automação aplicadas ao jornalismo e monitoramento urbano em tempo real. 
+
+Membros da equipe: Livia Lorrani, Henrique Xavier, Elias Ramos, Yan Libni, Rafael Thomas e Flávia Paloma
 
 ### Documentação
 - Acesso a [documentação](https://docs.google.com/document/d/17dYP3_amcxufTQoHhEg77aHHEqU2eq3K5JASw3NROUE/edit?tab=t.0)
